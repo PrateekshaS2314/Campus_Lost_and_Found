@@ -1,0 +1,42 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Check app startup",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/d",
+				"/s",
+				"/c",
+				"npm start"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Inspect local web ports",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/d",
+				"/s",
+				"/c",
+				"curl.exe -i --max-time 5 http://localhost:3001/ & curl.exe -i --max-time 5 http://localhost:3000/"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify Campus Finds homepage",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/d",
+				"/s",
+				"/c",
+				"curl.exe -i --max-time 20 http://localhost:3001/"
+			],
+			"problemMatcher": []
+		}
+	]
+}

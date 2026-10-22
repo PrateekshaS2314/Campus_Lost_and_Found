@@ -1,0 +1,65 @@
+<%- include('partials/header', { title }) %>
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">LOOKING FOR SOMETHING?</span>
+    <h1>Lost something?<br><span>Let’s bring it home.</span></h1>
+    <p>A simple place for our campus community to reconnect people with the things they’ve misplaced.</p>
+    <div class="button-row">
+      <a class="button button-primary" href="/lost-items">Browse lost items <span aria-hidden="true">→</span></a>
+      <a class="button button-light" href="/found-items">See found items</a>
+    </div>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <div class="orbit orbit-one"></div>
+    <div class="orbit orbit-two"></div>
+    <div class="floating-card card-book">📚 <span>Campus ID</span></div>
+    <div class="floating-card card-keys">🔑 <span>Keys</span></div>
+    <div class="hero-sun">✦</div>
+    <div class="hero-note">Good things<br>find their way.</div>
+  </div>
+</section>
+
+<section class="stats-row" aria-label="Community reports">
+  <div><strong><%= lostCount %></strong><span>lost items reported</span></div>
+  <div><strong><%= foundCount %></strong><span>found items shared</span></div>
+  <a href="/students/new">Be part of the community <span aria-hidden="true">↗</span></a>
+</section>
+
+<section class="section-block">
+  <div class="section-heading">
+    <div><span class="eyebrow">COMMUNITY BOARD</span><h2>Recently reported</h2></div>
+    <a class="text-link" href="/lost-items">Browse all lost items <span aria-hidden="true">→</span></a>
+  </div>
+  <% if (recentLost.length === 0 && recentFound.length === 0) { %>
+    <div class="empty-state">
+      <span class="empty-icon" aria-hidden="true">✳</span>
+      <h3>It’s quiet around here</h3>
+      <p>No reports yet. Register as a student and help get the community board started.</p>
+      <a class="button button-primary" href="/students/new">Register a student</a>
+    </div>
+  <% } else { %>
+    <div class="item-grid">
+      <% recentLost.forEach((item) => { %>
+        <article class="item-card">
+          <div class="card-topline"><span class="pill pill-lost">Lost</span><span><%= item.category %></span></div>
+          <h3><a href="/lost-items/<%= item._id %>"><%= item.itemName %></a></h3>
+          <p><%= item.lastSeenLocation %> · <%= item.dateLost.toLocaleDateString() %></p>
+          <span class="card-reporter">Reported by <%= item.reportedBy ? item.reportedBy.fullName : 'Unknown student' %></span>
+        </article>
+      <% }) %>
+      <% recentFound.forEach((item) => { %>
+        <article class="item-card">
+          <div class="card-topline"><span class="pill pill-found">Found</span><span><%= item.category %></span></div>
+          <h3><a href="/found-items/<%= item._id %>"><%= item.itemName %></a></h3>
+          <p><%= item.foundLocation %> · <%= item.dateFound.toLocaleDateString() %></p>
+          <span class="card-reporter">Reported by <%= item.reportedBy ? item.reportedBy.fullName : 'Unknown student' %></span>
+        </article>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+<section class="help-banner">
+  <div><span class="eyebrow">FOUND SOMETHING?</span><h2>Be someone’s good news today.</h2></div>
+  <a class="button button-dark" href="/found-items/new">Report a found item <span aria-hidden="true">→</span></a>
+</section>
+<%- include('partials/footer') %>

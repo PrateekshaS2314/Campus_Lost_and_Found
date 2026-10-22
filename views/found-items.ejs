@@ -1,0 +1,27 @@
+<%- include('partials/header', { title }) %>
+<section class="list-page">
+  <div class="section-heading">
+    <div><span class="eyebrow">COMMUNITY BOARD</span><h1>Found items</h1><p>Take a look at what has been found around campus.</p></div>
+    <a class="button button-primary" href="/found-items/new">Report a found item <span aria-hidden="true">→</span></a>
+  </div>
+  <% if (items.length === 0) { %>
+    <div class="empty-state">
+      <span class="empty-icon" aria-hidden="true">✳</span>
+      <h2>No found items reported yet</h2>
+      <p>Found something on campus? Share it here and help it find its owner.</p>
+      <a class="button button-primary" href="/found-items/new">Report a found item</a>
+    </div>
+  <% } else { %>
+    <div class="item-grid">
+      <% items.forEach((item) => { %>
+        <article class="item-card">
+          <div class="card-topline"><span class="pill pill-found">Found · <%= item.status %></span><span><%= item.category %></span></div>
+          <h2><a href="/found-items/<%= item._id %>"><%= item.itemName %></a></h2>
+          <p><%= item.foundLocation %> · <%= item.dateFound.toLocaleDateString() %></p>
+          <span class="card-reporter">Reported by <%= item.reportedBy ? item.reportedBy.fullName : 'Unknown student' %></span>
+        </article>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+<%- include('partials/footer') %>

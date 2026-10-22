@@ -1,0 +1,33 @@
+<%- include('partials/header', { title }) %>
+<section class="form-page">
+  <div class="form-intro">
+    <span class="eyebrow">LOST SOMETHING?</span>
+    <h1>Tell us what <span>went missing.</span></h1>
+    <p>Share a few details so your campus community can keep an eye out.</p>
+  </div>
+  <form class="form-card" action="/lost-items" method="post">
+    <% if (errors.length) { %>
+      <div class="alert alert-error" role="alert"><strong>Please check the following:</strong><ul><% errors.forEach((error) => { %><li><%= error %></li><% }) %></ul></div>
+    <% } %>
+    <label for="itemName">Item name</label>
+    <input id="itemName" name="itemName" value="<%= values.itemName || '' %>" required>
+    <label for="category">Category</label>
+    <input id="category" name="category" value="<%= values.category || '' %>" placeholder="e.g. Electronics, Bags" required>
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="4" required><%= values.description || '' %></textarea>
+    <label for="lastSeenLocation">Last seen location</label>
+    <input id="lastSeenLocation" name="lastSeenLocation" value="<%= values.lastSeenLocation || '' %>" required>
+    <label for="dateLost">Date lost</label>
+    <input id="dateLost" name="dateLost" type="date" value="<%= values.dateLost || '' %>" required>
+    <label for="reportedBy">Reported by</label>
+    <select id="reportedBy" name="reportedBy" required>
+      <option value="">Choose a registered student</option>
+      <% students.forEach((student) => { %>
+        <option value="<%= student._id %>" <%= values.reportedBy === String(student._id) ? 'selected' : '' %>><%= student.fullName %> · <%= student.email %></option>
+      <% }) %>
+    </select>
+    <% if (students.length === 0) { %><p class="form-note">Register a student profile first. Reporter selection identifies a submitter; it is not authentication.</p><% } %>
+    <button class="button button-primary button-full" type="submit">Submit lost-item report <span aria-hidden="true">→</span></button>
+  </form>
+</section>
+<%- include('partials/footer') %>

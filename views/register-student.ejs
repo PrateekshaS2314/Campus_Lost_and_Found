@@ -1,0 +1,24 @@
+<%- include('partials/header', { title }) %>
+<section class="form-page">
+  <div class="form-intro">
+    <span class="eyebrow">JOIN THE COMMUNITY</span>
+    <h1>Let’s get you <span>registered.</span></h1>
+    <p>Create a student profile to report items and help campus belongings find their way home.</p>
+  </div>
+  <form class="form-card" action="/students" method="post">
+    <% if (errors.length) { %>
+      <div class="alert alert-error" role="alert"><strong>Please check the following:</strong><ul><% errors.forEach((error) => { %><li><%= error %></li><% }) %></ul></div>
+    <% } %>
+    <label for="fullName">Full name</label>
+    <input id="fullName" name="fullName" value="<%= values.fullName || '' %>" autocomplete="name" required>
+    <label for="email">Student email</label>
+    <input id="email" name="email" type="email" value="<%= values.email || '' %>" autocomplete="email" required>
+    <label for="department">Department</label>
+    <input id="department" name="department" value="<%= values.department || '' %>" required>
+    <label for="contactNumber">Contact number</label>
+    <input id="contactNumber" name="contactNumber" type="tel" value="<%= values.contactNumber || '' %>" autocomplete="tel" required>
+    <button class="button button-primary button-full" type="submit">Create student profile <span aria-hidden="true">→</span></button>
+    <p class="form-note">This profile is used to show who submitted an item report. It does not sign you in.</p>
+  </form>
+</section>
+<%- include('partials/footer') %>

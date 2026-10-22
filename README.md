@@ -1,70 +1,97 @@
-# Getting Started with Create React App
+# Campus Lost & Found
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A Phase 1 campus lost-and-found application built with Express, EJS, MongoDB, and Mongoose. Students can register a profile, report lost or found items, browse reports, and search lost-item reports. Claims and return workflows are intentionally not part of this phase.
 
-## Available Scripts
+## Technologies
 
-In the project directory, you can run:
+- Node.js and Express.js
+- EJS server-rendered templates
+- MongoDB and Mongoose
+- dotenv for local configuration
+- HTML and CSS
 
-### `npm start`
+## Prerequisites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Node.js 18 or newer and npm
+- A MongoDB server, either a local MongoDB installation or a MongoDB Atlas database
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Installation and configuration
 
-### `npm test`
+1. Install dependencies:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   ```sh
+   npm install
+   ```
 
-### `npm run build`
+2. Create a `.env` file in the project root (or edit the supplied local-development `.env`):
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   ```dotenv
+   MONGODB_URI=mongodb://127.0.0.1:27017/campus_lost_found
+   PORT=3000
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   For Atlas, replace the local URI with your own connection string and database name. Keep credentials private; `.env` is ignored by Git. `.env.example` is a credential-free template.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. Start MongoDB if you are using a local database.
 
-### `npm run eject`
+4. Start the app:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+   ```sh
+   npm start
+   ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   Visit <http://localhost:3000>. The server confirms its URL after MongoDB connects. If the URI is missing or the database is unavailable, startup reports the problem and does not start a server that cannot persist data.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+For development with Node's built-in file watcher, run `npm run dev`.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Routes
 
-## Learn More
+| Method | Route | Purpose |
+| --- | --- | --- |
+| GET | `/` | Homepage with live report counts and recent reports |
+| GET | `/students/new` | Student registration form |
+| POST | `/students` | Create a student profile |
+| GET | `/students/:id` | View an individual student profile |
+| GET | `/lost-items` | Browse and search lost-item reports |
+| GET | `/lost-items/new` | Lost-item reporting form |
+| POST | `/lost-items` | Create a lost-item report |
+| GET | `/lost-items/:id` | View lost-item details |
+| GET | `/found-items` | Browse found-item reports |
+| GET | `/found-items/new` | Found-item reporting form |
+| POST | `/found-items` | Create a found-item report |
+| GET | `/found-items/:id` | View found-item details |
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Lost-item search accepts `q`, for example `/lost-items?q=library`, and matches item name, category, and last-seen location.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Models and relationships
 
-### Code Splitting
+- **Student**: required `fullName`, unique valid `email`, `department`, and `contactNumber`; MongoDB supplies the `_id`.
+- **LostItem**: required `itemName`, `category`, `description`, `lastSeenLocation`, `dateLost`, and `reportedBy`; status defaults to `Open`.
+- **FoundItem**: required `itemName`, `category`, `description`, `foundLocation`, `dateFound`, and `reportedBy`; status defaults to `Open`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+`LostItem.reportedBy` and `FoundItem.reportedBy` are ObjectId references to `Student`. The report forms load registered students from MongoDB for reporter selection. That selection is for attribution only and does not authenticate a student.
 
-### Analyzing the Bundle Size
+## Validation and error handling
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Forms reject missing and whitespace-only values. Student email format and uniqueness are checked; date inputs must be valid calendar dates. Report submissions verify that the selected student ID is a valid MongoDB ObjectId and that the student exists. Invalid IDs and missing records render a 404 page. Validation and duplicate-email errors are shown on the relevant form. Unexpected request/database errors are logged on the server and shown to users only as a generic message (no database URI or stack trace is exposed).
 
-### Making a Progressive Web App
+## Phase 1 verification checklist
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- [ ] Confirm MongoDB is running and `npm start` connects successfully.
+- [ ] Register a student, then check that `/students/:id` shows the saved profile.
+- [ ] Try registering the same email twice and confirm the duplicate is rejected.
+- [ ] Submit both lost and found reports using a registered student.
+- [ ] Browse the report lists, open details, and verify reporter information.
+- [ ] Search lost reports by item name, category, and location.
+- [ ] Check empty states before reports exist, and submit blank, invalid-date, and invalid-reference forms.
+- [ ] Open malformed and nonexistent student/item IDs and confirm the 404 response.
 
-### Advanced Configuration
+You can run the JavaScript syntax and EJS template compilation checks with:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```sh
+npm run check
+```
 
-### Deployment
+## Demonstration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Start MongoDB, start the app, register a student, and use that profile in the lost-item and found-item report forms. Browse the report lists and detail pages to demonstrate that the content is read from MongoDB rather than hard-coded examples.

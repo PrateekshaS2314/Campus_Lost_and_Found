@@ -1,0 +1,16 @@
+<%- include('partials/header', { title }) %>
+<section class="detail-page">
+  <a class="back-link" href="/lost-items">← Back to lost items</a>
+  <span class="pill pill-lost">Lost · <%= item.status %></span>
+  <h1><%= item.itemName %></h1>
+  <p class="detail-lead"><%= item.description %></p>
+  <div class="detail-card">
+    <dl class="detail-list">
+      <div><dt>Category</dt><dd><%= item.category %></dd></div>
+      <div><dt>Last seen</dt><dd><%= item.lastSeenLocation %></dd></div>
+      <div><dt>Date lost</dt><dd><%= item.dateLost.toLocaleDateString() %></dd></div>
+      <div><dt>Reported by</dt><dd><% if (item.reportedBy) { %><a href="/students/<%= item.reportedBy._id %>"><%= item.reportedBy.fullName %></a> · <a href="mailto:<%= item.reportedBy.email %>"><%= item.reportedBy.email %></a><% } else { %>Unknown student<% } %></dd></div>
+    </dl>
+  </div>
+</section>
+<%- include('partials/footer') %>

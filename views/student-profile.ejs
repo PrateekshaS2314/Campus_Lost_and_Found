@@ -1,0 +1,16 @@
+<%- include('partials/header', { title }) %>
+<section class="detail-page">
+  <a class="back-link" href="/">← Back to home</a>
+  <span class="eyebrow">STUDENT PROFILE</span>
+  <h1><%= student.fullName %></h1>
+  <div class="detail-card">
+    <dl class="detail-list">
+      <div><dt>Email</dt><dd><a href="mailto:<%= student.email %>"><%= student.email %></a></dd></div>
+      <div><dt>Department</dt><dd><%= student.department %></dd></div>
+      <div><dt>Contact number</dt><dd><%= student.contactNumber %></dd></div>
+      <div><dt>Student ID</dt><dd class="mono"><%= student._id %></dd></div>
+    </dl>
+  </div>
+  <a class="button button-primary" href="/lost-items/new">Report an item <span aria-hidden="true">→</span></a>
+</section>
+<%- include('partials/footer') %>

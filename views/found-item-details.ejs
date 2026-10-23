@@ -12,5 +12,40 @@
       <div><dt>Reported by</dt><dd><% if (item.reportedBy) { %><a href="/students/<%= item.reportedBy._id %>"><%= item.reportedBy.fullName %></a> · <a href="mailto:<%= item.reportedBy.email %>"><%= item.reportedBy.email %></a><% } else { %>Unknown student<% } %></dd></div>
     </dl>
   </div>
+  <% if (notice) { %><div class="alert alert-success" role="status"><%= notice %></div><% } %>
+  <% if (item.status === 'Open') { %>
+    <section class="claim-panel">
+      <div class="section-heading">
+        <div><span class="eyebrow">RECOGNIZE THIS ITEM?</span><h2>Submit a claim</h2><p>Choose your registered student profile and explain what makes this item yours.</p></div>
+      </div>
+      <form class="form-card" action="/found-items/<%= item._id %>/claims" method="post">
+        <% if (claimErrors.length) { %>
+          <div class="alert alert-error" role="alert"><strong>Please check the following:</strong><ul><% claimErrors.forEach((error) => { %><li><%= error %></li><% }) %></ul></div>
+        <% } %>
+        <label for="student">Claiming student</label>
+        <select id="student" name="student" required>
+          <option value="">Choose your registered student profile</option>
+          <% students.forEach((student) => { %>
+            <option value="<%= student._id %>" <%= claimValues.student === String(student._id) ? 'selected' : '' %>><%= student.fullName %> · <%= student.email %></option>
+          <% }) %>
+        </select>
+        <% if (students.length === 0) { %>
+          <p class="form-note">There are no registered students in this database yet. <a href="/students/new">Register a student profile</a> before submitting a claim.</p>
+        <% } %>
+        <label for="description">Why do you believe this item belongs to you?</label>
+        <textarea id="description" name="description" rows="5" minlength="10" maxlength="2000" required><%= claimValues.description || '' %></textarea>
+        <p class="form-note">Include identifying details. Your explanation will be visible to the student who reported the item.</p>
+        <button class="button button-primary button-full" type="submit" <%= students.length === 0 ? 'disabled' : '' %>>Submit claim</button>
+      </form>
+    </section>
+  <% } else { %>
+    <div class="alert alert-info" role="status">
+      <% if (item.status === 'Returned') { %>
+        This item has been returned. New claims are closed.
+      <% } else { %>
+        This item is <%= item.status %> and is not accepting claims.
+      <% } %>
+    </div>
+  <% } %>
 </section>
 <%- include('partials/footer') %>

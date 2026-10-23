@@ -26,8 +26,10 @@
         <option value="<%= student._id %>" <%= values.reportedBy === String(student._id) ? 'selected' : '' %>><%= student.fullName %> · <%= student.email %></option>
       <% }) %>
     </select>
-    <% if (students.length === 0) { %><p class="form-note">Register a student profile first. Reporter selection identifies a submitter; it is not authentication.</p><% } %>
-    <button class="button button-primary button-full" type="submit">Submit found-item report <span aria-hidden="true">→</span></button>
+    <% if (students.length === 0) { %>
+      <p class="form-note">There are no registered students in this database yet. <a href="/students/new">Register a student profile</a> before submitting this report. Student selection is for attribution, not authentication.</p>
+    <% } %>
+    <button class="button button-primary button-full" type="submit" <%= students.length === 0 ? 'disabled' : '' %>>Submit found-item report <span aria-hidden="true">→</span></button>
   </form>
 </section>
 <%- include('partials/footer') %>

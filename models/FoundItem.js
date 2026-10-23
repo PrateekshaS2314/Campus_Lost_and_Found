@@ -11,12 +11,14 @@ const foundItemSchema = new mongoose.Schema(
       trim: true
     },
     dateFound: { type: Date, required: [true, 'Date found is required.'] },
-    status: { type: String, enum: ['Open', 'Resolved'], default: 'Open' },
+    status: { type: String, enum: ['Open', 'Resolved', 'Returned'], default: 'Open' },
     reportedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Student',
       required: [true, 'A reporting student is required.']
-    }
+    },
+    returnedClaim: { type: mongoose.Schema.Types.ObjectId, ref: 'Claim' },
+    returnToken: { type: String }
   },
   { timestamps: true }
 );

@@ -1,0 +1,74 @@
+<%- include('partials/header', { title }) %>
+<section class="list-page">
+  <div class="section-heading">
+    <div><span class="eyebrow">LISTING OWNER WORKFLOW</span><h1>Manage claims</h1><p>Review claims submitted for found items reported by your selected student profile.</p></div>
+  </div>
+
+  <% if (notice) { %><div class="alert alert-success" role="status"><%= notice %></div><% } %>
+  <% if (errors.length) { %>
+    <div class="alert alert-error" role="alert"><strong>Please check the following:</strong><ul><% errors.forEach((error) => { %><li><%= error %></li><% }) %></ul></div>
+  <% } %>
+
+  <form class="owner-select form-card" action="/claims/manage" method="get">
+    <label for="studentId">Manage listings reported by</label>
+    <select id="studentId" name="studentId" required <%= students.length === 0 ? 'disabled' : '' %>>
+      <option value="">Choose a registered student</option>
+      <% students.forEach((student) => { %>
+        <option value="<%= student._id %>" <%= selectedStudent && String(selectedStudent._id) === String(student._id) ? 'selected' : '' %>><%= student.fullName %> · <%= student.email %></option>
+      <% }) %>
+    </select>
+    <% if (students.length === 0) { %>
+      <p class="form-note">There are no registered students in this database yet. <a href="/students/new">Register a student profile</a> before choosing a listing owner.</p>
+    <% } else { %>
+      <p class="form-note">Student selection demonstrates ownership only; it does not authenticate identity.</p>
+    <% } %>
+    <button class="button button-primary" type="submit" <%= students.length === 0 ? 'disabled' : '' %>>View claims</button>
+  </form>
+
+  <% if (selectedStudent) { %>
+    <% if (claims.length === 0) { %>
+      <div class="empty-state claims-empty">
+        <span class="empty-icon" aria-hidden="true">✳</span>
+        <h2>No claims to review</h2>
+        <p>There are no claims for found items reported by <%= selectedStudent.fullName %>.</p>
+      </div>
+    <% } else { %>
+      <div class="claims-list">
+        <% claims.forEach((claim) => { %>
+          <article class="claim-card">
+            <div class="card-topline">
+              <span class="pill <%= claim.status === 'Pending' ? 'pill-pending' : (claim.status === 'Approved' ? 'pill-approved' : 'pill-rejected') %>"><%= claim.status %></span>
+              <time datetime="<%= claim.createdAt.toISOString() %>"><%= claim.createdAt.toLocaleString() %></time>
+            </div>
+            <h2><%= claim.foundItem ? claim.foundItem.itemName : 'Found item no longer available' %></h2>
+            <p class="claimant"><strong>Claimant:</strong>
+              <% if (claim.student) { %>
+                <a href="/students/<%= claim.student._id %>"><%= claim.student.fullName %></a> ·
+                <a href="mailto:<%= claim.student.email %>"><%= claim.student.email %></a>
+                <% if (claim.student.department) { %> · <%= claim.student.department %><% } %>
+              <% } else { %>Unknown student<% } %>
+            </p>
+            <p class="claim-proof"><strong>Claim proof</strong><br><%= claim.description %></p>
+            <% if (claim.status === 'Pending') { %>
+              <div class="claim-actions">
+                <% if (claim.foundItem && claim.foundItem.status === 'Open') { %>
+                  <form action="/claims/<%= claim._id %>/approve" method="post">
+                    <input type="hidden" name="ownerStudentId" value="<%= selectedStudent._id %>">
+                    <button class="button button-primary" type="submit">Approve and mark returned</button>
+                  </form>
+                <% } else { %>
+                  <p class="form-note">This item is no longer open, so this claim cannot be approved.</p>
+                <% } %>
+                <form action="/claims/<%= claim._id %>/reject" method="post">
+                  <input type="hidden" name="ownerStudentId" value="<%= selectedStudent._id %>">
+                  <button class="button button-light" type="submit">Reject claim</button>
+                </form>
+              </div>
+            <% } %>
+          </article>
+        <% }) %>
+      </div>
+    <% } %>
+  <% } %>
+</section>
+<%- include('partials/footer') %>

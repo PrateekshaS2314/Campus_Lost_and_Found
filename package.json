@@ -11,7 +11,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node --watch index.js",
-    "check": "node --check index.js && node --check models/Student.js && node --check models/LostItem.js && node --check models/FoundItem.js && node scripts/check-templates.js"
+    "check": "node --check index.js && node --check models/Student.js && node --check models/LostItem.js && node --check models/FoundItem.js && node --check models/Claim.js && node scripts/check-templates.js"
   },
   "engines": {
     "node": ">=18"
